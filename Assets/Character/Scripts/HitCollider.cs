@@ -5,7 +5,6 @@ using UnityEngine.Events;
 
 public class HitCollider : MonoBehaviour
 {
-    //HurtCollider hurtCollider;
     [SerializeField] List<string> hittableTags;
     public UnityEvent<HitCollider, HurtCollider> onHitDelivered;
 
