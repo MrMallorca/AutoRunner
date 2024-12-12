@@ -2,12 +2,16 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using DG.Tweening;
 using System.Collections;
+using UnityEngine.Video;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] float forwardAcceleration = 1f;
     [SerializeField] float maxForwardVelocity = 10f;
     [SerializeField] float minForwardVelocity = 1f;
     [SerializeField] float verticalVelocityCh = 1f;
+    [SerializeField] float velocityonHurt = -3f;
+    [SerializeField] float jumpVelocityOnHurt = 3f;
+
 
     [SerializeField] InputActionReference upperCut;
     [SerializeField] InputActionReference punch;
@@ -26,20 +30,24 @@ public class PlayerController : MonoBehaviour
 
     float gravity = -9.8f;
 
+    int vidas = 3;
+
     CharacterController characterController;
-
-
+    HurtCollider hurtcollider;
 
     private void Awake()
     {
         anim = GetComponentInChildren<Animator>();
 
         characterController = GetComponent<CharacterController>();
+        hurtcollider = GetComponent<HurtCollider>();
     }
 
     private void OnEnable()
     {
         jump.action.Enable();
+
+        hurtcollider.onHitReceived.AddListener(OnHurt);
 
         jump.action.performed += OnJump;
         jump.action.canceled += OnJump;
@@ -55,6 +63,8 @@ public class PlayerController : MonoBehaviour
     {
 
         Debug.Log(forwardVelocity);
+        Debug.Log(vidas);
+
     }
 
     void FixedUpdate()
@@ -77,6 +87,13 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("isJumping", !characterController.isGrounded);
     }
  
+    void OnHurt(HitCollider hitCol, HurtCollider hurtCol)
+    {
+        vidas -= 1;
+        forwardVelocity = velocityonHurt;
+        verticalVelocity = jumpVelocityOnHurt;
+    }
+
 
     private void OnPunch(InputAction.CallbackContext context)
     {
@@ -157,6 +174,8 @@ public class PlayerController : MonoBehaviour
     {
         jump.action.performed -= OnJump;
         jump.action.canceled -= OnJump;
+
+        hurtcollider.onHitReceived.RemoveListener(OnHurt);
 
 
         jump.action.Disable();
