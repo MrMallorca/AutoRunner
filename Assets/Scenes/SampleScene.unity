@@ -568,37 +568,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
---- !u!1 &505947771
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 505947772}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &505947772
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 505947771}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.637921, y: 0.8381707, z: -2.725337}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1768,7 +1737,7 @@ MonoBehaviour:
   maxForwardVelocity: 10
   minForwardVelocity: 10
   verticalVelocityCh: 1
-  velocityonHurt: -3
+  velocityonHurt: -2
   jumpVelocityOnHurt: 3
   upperCut: {fileID: -818981838153241521, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   punch: {fileID: 1120369429361536294, guid: 052faaac586de48259a63d0c4782560b, type: 3}
@@ -1833,7 +1802,7 @@ GameObject:
   - component: {fileID: 1579715061}
   - component: {fileID: 1579715060}
   - component: {fileID: 1579715059}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1959,7 +1928,7 @@ GameObject:
   - component: {fileID: 1669280972}
   - component: {fileID: 1669280971}
   - component: {fileID: 1669280970}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2204,10 +2173,9 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
-  - {fileID: 505947772}
   - {fileID: 968011805}
-  - {fileID: 2135949189}
   - {fileID: 1228754754}
   - {fileID: 129867831}
   - {fileID: 1579715063}
   - {fileID: 1669280974}
+  - {fileID: 2135949189}

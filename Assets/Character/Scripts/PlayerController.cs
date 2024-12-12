@@ -3,13 +3,15 @@ using UnityEngine.InputSystem;
 using DG.Tweening;
 using System.Collections;
 using UnityEngine.Video;
+using UnityEditor.SearchService;
+using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] float forwardAcceleration = 1f;
     [SerializeField] float maxForwardVelocity = 10f;
     [SerializeField] float minForwardVelocity = 1f;
     [SerializeField] float verticalVelocityCh = 1f;
-    [SerializeField] float velocityonHurt = -3f;
+    [SerializeField] float velocityonHurt = -2f;
     [SerializeField] float jumpVelocityOnHurt = 3f;
 
 
@@ -32,6 +34,9 @@ public class PlayerController : MonoBehaviour
 
     int vidas = 3;
 
+    bool canMove;
+    bool isDead;
+
     CharacterController characterController;
     HurtCollider hurtcollider;
 
@@ -41,6 +46,9 @@ public class PlayerController : MonoBehaviour
 
         characterController = GetComponent<CharacterController>();
         hurtcollider = GetComponent<HurtCollider>();
+
+        canMove = true;
+        isDead = false;
     }
 
     private void OnEnable()
@@ -69,19 +77,20 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector3 movement = Vector3.forward * forwardVelocity * Time.fixedDeltaTime +
-        Vector3.up * verticalVelocity * Time.deltaTime;
-        characterController.Move(movement);
-
-        if (forwardVelocity < minForwardVelocity)
-        {
-            forwardVelocity += forwardAcceleration * Time.deltaTime;
-        }
-
-        if (characterController.isGrounded)
-        {
-            verticalVelocity = 0;
-        }
+       if(!isDead)
+       {
+            Vector3 movement = Vector3.forward * forwardVelocity * Time.fixedDeltaTime +
+                  Vector3.up * verticalVelocity * Time.deltaTime;
+            characterController.Move(movement);
+            if (forwardVelocity < minForwardVelocity)
+            {
+                forwardVelocity += forwardAcceleration * Time.deltaTime;
+            }
+            if (characterController.isGrounded)
+            {
+                verticalVelocity = 0;
+            }
+       }
 
         verticalVelocity += gravity * Time.deltaTime;
         anim.SetBool("isJumping", !characterController.isGrounded);
@@ -89,46 +98,52 @@ public class PlayerController : MonoBehaviour
  
     void OnHurt(HitCollider hitCol, HurtCollider hurtCol)
     {
-        vidas -= 1;
-        forwardVelocity = velocityonHurt;
-        verticalVelocity = jumpVelocityOnHurt;
+        StartCoroutine(KnockBackEffect());
+
     }
 
 
     private void OnPunch(InputAction.CallbackContext context)
     {
-        
-        
-       StartCoroutine(RightPunch());
-        
+        if(canMove)
+        {
+            StartCoroutine(RightPunch());
+        }
+
     }
     private void OnUpperCut(InputAction.CallbackContext context)
     {
-
-
-        if (characterController.isGrounded)
+        if(canMove) 
         {
-            verticalVelocity = jumpForce;
-            StartCoroutine(UpperCut());
+            if (characterController.isGrounded)
+            {
+                verticalVelocity = jumpForce;
+                StartCoroutine(UpperCut());
 
+            }
+            else
+            {
+                StartCoroutine(Smash());
+            }
         }
-        else
-        {
-            StartCoroutine(Smash());
-        }
+
+       
 
     }
     void OnJump(InputAction.CallbackContext ctx)
     {
-
-        if (characterController.isGrounded)
+        if(canMove)
         {
+            if (characterController.isGrounded)
+            {
 
-            anim.SetBool("isJumping", true);
+                anim.SetBool("isJumping", true);
 
-            verticalVelocity = jumpForce;
+                verticalVelocity = jumpForce;
 
+            }
         }
+       
     }
 
     public IEnumerator RightPunch()
@@ -168,6 +183,38 @@ public class PlayerController : MonoBehaviour
         DOVirtual.DelayedCall(0.5f,
             () => HitColliderSmash.gameObject.SetActive(false));
         yield return new WaitForSeconds(0.5f);
+    }
+
+    public IEnumerator KnockBackEffect()
+    {
+        forwardAcceleration = 1f;
+        vidas -= 1;
+        forwardVelocity = velocityonHurt;
+        verticalVelocity = jumpVelocityOnHurt;
+        forwardAcceleration = 2f;
+
+        if (vidas > 0)
+        {
+            canMove = false;
+            yield return new WaitForSeconds(1f);
+            canMove = true;
+
+            forwardAcceleration = 1f;
+
+            characterController.excludeLayers = LayerMask.GetMask("Enemy");
+            yield return new WaitForSeconds(2f);
+            characterController.excludeLayers = 0;
+        }
+        else
+        {
+            isDead = true;
+            anim.SetTrigger("Death");
+            characterController.excludeLayers = LayerMask.GetMask("Enemy");
+            yield return new WaitForSeconds(3f);
+
+            SceneManager.LoadScene(0);
+        }
+
     }
 
     private void OnDisable()
