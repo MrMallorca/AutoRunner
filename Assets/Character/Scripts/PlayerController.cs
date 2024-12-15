@@ -3,12 +3,11 @@ using UnityEngine.InputSystem;
 using DG.Tweening;
 using System.Collections;
 using UnityEngine.Video;
-using UnityEditor.SearchService;
 using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] float forwardAcceleration = 1f;
-    [SerializeField] float maxForwardVelocity = 10f;
+    [SerializeField] float maxForwardVelocity = 6f;
     [SerializeField] float minForwardVelocity = 1f;
     [SerializeField] float verticalVelocityCh = 1f;
     [SerializeField] float velocityonHurt = -2f;
@@ -32,7 +31,7 @@ public class PlayerController : MonoBehaviour
 
     float gravity = -9.8f;
 
-    int vidas = 3;
+    public static int vidas = 3;
 
     bool canMove;
     bool isDead;
@@ -70,7 +69,6 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 
-        Debug.Log(forwardVelocity);
         Debug.Log(vidas);
 
     }
@@ -165,7 +163,7 @@ public class PlayerController : MonoBehaviour
         anim.SetTrigger("Uppercut");
         if (forwardVelocity > minForwardVelocity)
         {
-            forwardVelocity -= 5f;
+            forwardVelocity -= 3f;
         }
         DOVirtual.DelayedCall(0.5f,
             () => HitColliderUpperCut.gameObject.SetActive(false));
@@ -178,7 +176,7 @@ public class PlayerController : MonoBehaviour
         anim.SetTrigger("Uppercut");
         if (forwardVelocity > minForwardVelocity)
         {
-            forwardVelocity -= 5f;
+            forwardVelocity -= 3f;
         }
         DOVirtual.DelayedCall(0.5f,
             () => HitColliderSmash.gameObject.SetActive(false));
@@ -209,10 +207,10 @@ public class PlayerController : MonoBehaviour
         {
             isDead = true;
             anim.SetTrigger("Death");
+            Time.timeScale = 0.5f;
             characterController.excludeLayers = LayerMask.GetMask("Enemy");
             yield return new WaitForSeconds(3f);
 
-            SceneManager.LoadScene(0);
         }
 
     }
